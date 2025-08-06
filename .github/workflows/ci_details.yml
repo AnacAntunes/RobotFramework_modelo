@@ -26,48 +26,33 @@ jobs:
         run: |
           echo "Instalando dependências do projeto..."
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install robotframework==5.0.1
+          pip install robotframework-seleniumlibrary==6.0.0
+          pip install requests==2.32.0 pyyaml==6.0.2
           echo "Dependências instaladas com sucesso."
 
-      - name: Create Directories for K6
+      - name: Create Directories
         run: |
-          mkdir -p tests/performance_tests/k6_scripts
           mkdir -p reports/performance
-          echo "Diretórios para testes K6 criados com sucesso."
-
-      - name: Pull K6 Docker Image
+          echo "Diretórios para testes criados com sucesso."
+          
+      - name: Verify Docker
         run: |
-          echo "Baixando a imagem Docker do K6..."
-          docker pull grafana/k6:latest
-          echo "Imagem Docker do K6 baixada com sucesso."
-
-      - name: Check Docker Status
-        run: |
-          echo "Verificando status do Docker..."
           docker --version
           docker info
-          echo "Docker está operacional."
 
-      - name: List Directory Structure
-        run: |
-          echo "Estrutura de diretórios do projeto:"
-          find . -type d | sort
+      - name: Pull K6 Docker Image
+        run: docker pull grafana/k6:latest
 
-      - name: Run Robot Framework Tests (Excluding Performance)
+      - name: Run Performance Tests
         run: |
-          echo "Executando os testes do Robot Framework (exceto performance)..."
+          echo "Executando os testes de performance..."
+          robot --outputdir results/performance tests/performance_tests/performance_k6_test.robot
+
+      - name: Run Other Tests
+        run: |
+          echo "Executando os demais testes (quando existirem)..."
           robot --outputdir results --exclude performance tests/ || true
-
-      - name: Run Performance Tests Separately
-        run: |
-          echo "Executando os testes de performance separadamente..."
-          robot --outputdir results/performance --include performance tests/performance_tests/ || true
-
-      - name: Extract Test Results
-        run: |
-          echo "Sumário de Resultados:"
-          [ -f results/output.xml ] && grep -c 'status="PASS"' results/output.xml || echo "0 testes passaram"
-          [ -f results/output.xml ] && grep -c 'status="FAIL"' results/output.xml || echo "0 testes falharam"
 
       - name: Upload Test Reports
         uses: actions/upload-artifact@v4
@@ -75,6 +60,6 @@ jobs:
           name: test-results
           path: |
             results/
-            reports/performance/
+            reports/
       - name: Log Upload Completion
         run: echo "Relatórios de testes enviados como artefatos com sucesso."

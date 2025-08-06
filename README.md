@@ -67,7 +67,7 @@ O arquivo tests/performance_tests/performance_k6_test.robot demonstra como:
 #### Execução dos Testes
 Para executar os testes, utilize o seguinte comando na linha de comando na raiz do projeto:
 ```bash
-robot --outputdir results tests/
+robot --outputdir results --exclude performance tests/
 ```
 Por exemplo, para executar os testes de API, você pode usar:
 
