@@ -17,49 +17,29 @@ jobs:
       - name: Log Checkout Completion
         run: echo "Código fonte verificado com sucesso."
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-        
-      - name: Install Dependencies
+      - name: Install Robot Framework
         run: |
-          echo "Instalando dependências do projeto..."
+          echo "Instalando dependências do Robot Framework..."
           python -m pip install --upgrade pip
-          pip install robotframework==5.0.1
-          pip install robotframework-seleniumlibrary==6.0.0
-          pip install requests==2.32.0 pyyaml==6.0.2
-          echo "Dependências instaladas com sucesso."
+          pip install robotframework
+          echo "Robot Framework instalado com sucesso."
 
-      - name: Create Directories
+      - name: Run Robot Framework Tests
         run: |
-          mkdir -p reports/performance
-          echo "Diretórios para testes criados com sucesso."
-          
-      - name: Verify Docker
-        run: |
-          docker --version
-          docker info
+          echo "Executando os testes do Robot Framework..."
+          robot --outputdir results tests/
 
-      - name: Pull K6 Docker Image
-        run: docker pull grafana/k6:latest
-
-      - name: Run Performance Tests
+      - name: Extract Test Results
         run: |
-          echo "Executando os testes de performance..."
-          robot --outputdir results/performance tests/performance_tests/performance_k6_test.robot
-
-      - name: Run Other Tests
-        run: |
-          echo "Executando os demais testes (quando existirem)..."
-          robot --outputdir results --exclude performance tests/ || true
+          echo "Testes que passaram:"
+          grep 'status="PASS"' results/output.xml | awk -F\" '{print $6}'
+          echo "Testes que falharam:"
+          grep 'status="FAIL"' results/output.xml | awk -F\" '{print $6}'
 
       - name: Upload Test Reports
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: |
-            results/
-            reports/
+          path: results/
       - name: Log Upload Completion
-        run: echo "Relatórios de testes enviados como artefatos com sucesso."
+        run: echo "Relatórios de testes enviados como artefatos com sucesso. Veja os resultados completos em 'results/report.html'."
