@@ -1,4 +1,4 @@
-name: CI Details
+name: CI Details Tests
 
 on:
   push:
