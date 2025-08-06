@@ -1,0 +1,85 @@
+name: Accessibility Tests
+
+on:
+  # Executar em push na branch main
+  push:
+    branches: [ main ]
+  
+  # Executar em pull requests para main
+  pull_request:
+    branches: [ main ]
+  
+  # Permitir execução manual
+  workflow_dispatch:
+  
+  # Executar uma vez por semana (segunda-feira às 8:00)
+  schedule:
+    - cron: '0 8 * * 1'
+
+jobs:
+  accessibility-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+        
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install robotframework==5.0.1
+          echo "Dependências instaladas com sucesso."
+
+      - name: Create Reports Directory
+        run: |
+          mkdir -p reports/accessibility
+          echo "Diretório de relatórios criado com sucesso."
+          
+      - name: Verify Docker
+        run: |
+          docker --version
+          docker info
+          echo "Docker verificado com sucesso."
+
+      - name: Pull Pa11y Docker Image
+        run: |
+          echo "Baixando imagem do Pa11y..."
+          docker pull djlechuck/pa11y-ci
+          echo "Imagem do Pa11y baixada com sucesso."
+
+      - name: Run Accessibility Tests
+        run: |
+          echo "Executando testes de acessibilidade..."
+          robot --outputdir results/accessibility tests/accessibility_tests/
+          echo "Testes de acessibilidade concluídos."
+
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-results
+          path: |
+            results/accessibility/
+            reports/accessibility/
+        
+      - name: Generate Accessibility Report Summary
+        run: |
+          echo "## Resumo de Acessibilidade" > accessibility_summary.md
+          echo "" >> accessibility_summary.md
+          echo "Sites testados:" >> accessibility_summary.md
+          for file in reports/accessibility/*.log; do
+            site=$(grep "URL:" $file | cut -d' ' -f2)
+            echo "- $site" >> accessibility_summary.md
+          done
+          echo "" >> accessibility_summary.md
+          echo "Veja os relatórios completos nos artefatos do workflow." >> accessibility_summary.md
+          
+      - name: Upload Summary as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-summary
+          path: accessibility_summary.md
