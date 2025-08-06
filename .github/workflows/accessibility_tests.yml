@@ -1,21 +1,23 @@
-name: Accessibility Tests
+name: WCAG Accessibility Tests
 
 on:
-  # Permitir execução manual
   workflow_dispatch:
-  
-  # Executar uma vez por semana (segunda-feira às 8:00)
   schedule:
-    - cron: '0 8 * * 1'
+    - cron: '0 8 * * 1'  # Segunda-feira às 8h
 
 jobs:
-  accessibility-tests:
+  wcag-accessibility-tests:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -26,109 +28,56 @@ jobs:
           python -m pip install --upgrade pip
           pip install robotframework==5.0.1
           echo "Robot Framework instalado com sucesso."
-
-      - name: Create Directories
+        
+      - name: Create Report Directories
         run: |
-          mkdir -p reports/accessibility/lighthouse
-          mkdir -p reports/accessibility/axe
-          mkdir -p reports/accessibility/htmlcs
+          mkdir -p reports/accessibility/temp
           chmod -R 777 reports/accessibility
-          echo "Diretórios criados com sucesso."
-          
-      - name: Pull Docker Images
+          echo "Diretórios de relatórios criados com sucesso."
+      
+      - name: Run WCAG Accessibility Tests
         run: |
-          echo "Preparando imagens Docker..."
-          docker pull patrickhulce/lhci-client:latest
-          docker pull node:14-alpine
-          docker pull buildkite/puppeteer:latest
-          echo "Imagens Docker preparadas com sucesso."
-
-      - name: Run Lighthouse Test
-        id: lighthouse
-        continue-on-error: true
+          echo "Executando testes de conformidade WCAG..."
+          robot --outputdir results tests/accessibility_tests/wcag_test.robot
+          echo "Testes WCAG concluídos."
+        
+      - name: Generate Summary
         run: |
-          echo "Executando testes Lighthouse..."
-          robot --outputdir results/lighthouse --include lighthouse tests/accessibility_tests/accessibility_test.robot
-          echo "lighthouse_status=$?" >> $GITHUB_OUTPUT
-
-      - name: Run Axe Test
-        id: axe
-        continue-on-error: true
-        run: |
-          echo "Executando testes Axe..."
-          robot --outputdir results/axe --include axe tests/accessibility_tests/accessibility_test.robot
-          echo "axe_status=$?" >> $GITHUB_OUTPUT
-
-      - name: Run HTML_CodeSniffer Test
-        id: htmlcs
-        continue-on-error: true
-        run: |
-          echo "Executando testes HTML_CodeSniffer..."
-          robot --outputdir results/htmlcs --include htmlcs tests/accessibility_tests/accessibility_test.robot
-          echo "htmlcs_status=$?" >> $GITHUB_OUTPUT
-
-      - name: Generate Summary Report
-        run: |
-          echo "# Relatório de Testes de Acessibilidade" > accessibility_summary.md
-          echo "" >> accessibility_summary.md
-          echo "## Status dos Testes" >> accessibility_summary.md
-          echo "" >> accessibility_summary.md
+          echo "## Relatório de Conformidade WCAG" > wcag_summary.md
+          echo "" >> wcag_summary.md
           
-          if [ "${{ steps.lighthouse.outputs.lighthouse_status }}" == "0" ]; then
-            echo "✅ **Lighthouse:** Passou" >> accessibility_summary.md
-          else
-            echo "❌ **Lighthouse:** Falhou" >> accessibility_summary.md
-          fi
+          # Adicionar detalhes de cada site testado
+          for report in reports/accessibility/wcag_summary_*.md; do
+            if [ -f "$report" ]; then
+              url=$(grep -m 1 "URL:" "$report" | cut -d' ' -f2-)
+              echo "### $url" >> wcag_summary.md
+              echo "" >> wcag_summary.md
+              
+              # Verificar se há violações
+              if grep -q "Nenhuma violação WCAG encontrada" "$report"; then
+                echo "✅ **Nenhuma violação WCAG encontrada!**" >> wcag_summary.md
+              else
+                violations=$(grep -m 1 "violações WCAG encontradas" "$report" | cut -d' ' -f1 | tr -d '❌')
+                echo "❌ **$violations violações WCAG encontradas**" >> wcag_summary.md
+                echo "" >> wcag_summary.md
+                echo "Principais problemas:" >> wcag_summary.md
+                
+                # Extrair tabela de violações (até 5 primeiras)
+                awk '/\| # \| Regra/{flag=1; count=0} flag && count<6{print; count++}' "$report" >> wcag_summary.md
+              fi
+              echo "" >> wcag_summary.md
+              echo "---" >> wcag_summary.md
+              echo "" >> wcag_summary.md
+            fi
+          done
           
-          if [ "${{ steps.axe.outputs.axe_status }}" == "0" ]; then
-            echo "✅ **Axe:** Passou" >> accessibility_summary.md
-          else
-            echo "❌ **Axe:** Falhou" >> accessibility_summary.md
-          fi
-          
-          if [ "${{ steps.htmlcs.outputs.htmlcs_status }}" == "0" ]; then
-            echo "✅ **HTML_CodeSniffer:** Passou" >> accessibility_summary.md
-          else
-            echo "❌ **HTML_CodeSniffer:** Falhou" >> accessibility_summary.md
-          fi
-          
-          echo "" >> accessibility_summary.md
-          echo "## Sites Testados" >> accessibility_summary.md
-          echo "" >> accessibility_summary.md
-          
-          find reports/accessibility -name "*.log" | grep -v "/\." | sort | xargs grep "URL:" | sort | uniq | sed 's/.*URL: /- /' >> accessibility_summary.md
+          echo "Para detalhes completos, consulte os relatórios nos artefatos." >> wcag_summary.md
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         with:
-          name: accessibility-reports
+          name: wcag-accessibility-results
           path: |
             results/
             reports/accessibility/
-            accessibility_summary.md
-          
-      - name: Report Final Status
-        run: |
-          # Determinar status final baseado em todos os testes
-          FINAL_STATUS=0
-          
-          if [ "${{ steps.lighthouse.outputs.lighthouse_status }}" != "0" ]; then
-            FINAL_STATUS=1
-          fi
-          
-          if [ "${{ steps.axe.outputs.axe_status }}" != "0" ]; then
-            FINAL_STATUS=1
-          fi
-          
-          if [ "${{ steps.htmlcs.outputs.htmlcs_status }}" != "0" ]; then
-            FINAL_STATUS=1
-          fi
-          
-          # Mostrar mensagem final
-          if [ "$FINAL_STATUS" == "0" ]; then
-            echo "✅ Todos os testes de acessibilidade passaram!"
-          else
-            echo "❌ Um ou mais testes de acessibilidade falharam. Verifique o relatório detalhado."
-            # Não falhar o workflow para evitar bloquear CI/CD
-            # exit $FINAL_STATUS
-          fi
+            wcag_summary.md
