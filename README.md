@@ -45,12 +45,12 @@ pip install -r requirements.txt
 
 ### Explicações para Cada Dependência:
 
-**robotframework:** A versão principal do Robot Framework, que é usada para escrever e executar suas suítes de teste.
-**robotframework-appiumlibrary:** Uma biblioteca para integrar o Appium dentro do Robot Framework, permitindo testes de aplicações móveis.
-**Appium-Python-Client:** Client oficial para o Appium que possibilita a automação de testes em aplicativos móveis.
-**robotframework-seleniumlibrary:** Caso haja necessidade de testes web, essa biblioteca fornece suporte para automação com Selenium.
-**requests:** Usada para realizar requisições HTTP quando você precisa interagir com serviços web durante os testes.
-**pyyaml:** Facilita a manipulação de arquivos YAML, útil especialmente para configuração.
+- **robotframework:** A versão principal do Robot Framework, que é usada para escrever e executar suas suítes de teste.
+- **robotframework-appiumlibrary:** Uma biblioteca para integrar o Appium dentro do Robot Framework, permitindo testes de aplicações móveis.
+- **Appium-Python-Client:** Client oficial para o Appium que possibilita a automação de testes em aplicativos móveis.
+- **robotframework-seleniumlibrary:** Caso haja necessidade de testes web, essa biblioteca fornece suporte para automação com Selenium.
+- **requests:** Usada para realizar requisições HTTP quando você precisa interagir com serviços web durante os testes.
+- **pyyaml:** Facilita a manipulação de arquivos YAML, útil especialmente para configuração.
 
 ## Execução dos Testes
 Para executar os testes, utilize o seguinte comando na linha de comando na raiz do projeto:
@@ -69,13 +69,13 @@ Os relatórios e logs da execução dos testes serão gerados na pasta reports/.
 ### Estrutura dos Testes
 Os testes estão organizados em diferentes diretórios e arquivos de acordo com seus propósitos:
 
-**acceptance_tests/:** Testes de aceitação do sistema.
-**functional_tests/:** Testes que garantem que as funcionalidades funcionam como esperado.
-**regression_tests/:** Testes que garantem que as funcionalidades existentes não são quebradas por novas alterações.
-**performance_tests/:** Testes que avaliam o desempenho do sistema.
-**API_tests/:** Testes específicos para as APIs do sistema.
-**UI_tests/:** Testes que validam a interface do usuário.
-**suites/:** Conjuntos de testes para facilitar a execução de grupos de testes relacionados.
+- **acceptance_tests/:** Testes de aceitação do sistema.
+- **functional_tests/:** Testes que garantem que as funcionalidades funcionam como esperado.
+- **regression_tests/:** Testes que garantem que as funcionalidades existentes não são quebradas por novas alterações.
+- **performance_tests/:** Testes que avaliam o desempenho do sistema.
+- **API_tests/:** Testes específicos para as APIs do sistema.
+- **UI_tests/:** Testes que validam a interface do usuário.
+- **suites/:** Conjuntos de testes para facilitar a execução de grupos de testes relacionados.
 
 ## Contribuição
 Contribuições são bem-vindas! Se você encontrar algum problema ou tiver sugestões de melhoria, sinta-se à vontade para abrir uma issue ou enviar um pull request.
