@@ -5,4 +5,3 @@ robotframework-seleniumlibrary==6.0.0
 requests==2.32.0
 pyyaml==6.0.2
 robotframework-requests==0.9.6
-robotframework-processlibrary==1.0.0
