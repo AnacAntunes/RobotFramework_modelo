@@ -4,46 +4,32 @@ name: CI
 
 # Controle de quando o fluxo de trabalho será executado
 on:
-  # Aciona o fluxo de trabalho em eventos de push ou pull request, mas apenas para o ramo principal
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-  # Permite que você execute este fluxo de trabalho manualmente na aba Actions
   workflow_dispatch:
 
 # Um fluxo de trabalho é composto por um ou mais jobs que podem ser executados sequencialmente ou em paralelo
 jobs:
-  # Este fluxo de trabalho contém um único job chamado "build"
   build:
-    # O tipo de runner em que o job será executado
     runs-on: ubuntu-latest
 
-    # As etapas representam uma sequência de tarefas que serão executadas como parte do job
     steps:
       # Faz o checkout do repositório na variável $GITHUB_WORKSPACE, para que seu job possa acessá-lo
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      # Executa um comando único usando o shell do runner
-      - name: Executar um script de uma linha
-        run: echo Olá, mundo!
-
-      # Executa um conjunto de comandos usando o shell do runner
-      - name: Executar um script de múltiplas linhas
-        run: |
-          echo Adicione outras ações para compilar,
-          echo testar e implantar seu projeto.
-      
       # Executa os testes e gera um relatório
-      - name: Executar testes e gerar relatório
+      - name: Run Tests and Generate Report
         run: |
-          # Substitua este comando pelo seu gerador de relatórios ou ferramentas de teste apropriadas
+          npm install  # Certifique-se de instalar as dependências antes de rodar os testes
           npm test -- --reporter=spec > test-report.txt
-          
-      # Faz o upload do relatório como artefato para consultar posteriormente
-      - name: Fazer upload do relatório de testes
-        uses: actions/upload-artifact@v3.1.0
+        continue-on-error: false  # Garante que o fluxo falhe se os testes falharem
+
+      # Faz o upload do relatório gerado como artefato
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v3  # Atualize para a versão mais recente
         with:
-          name: relatório-de-testes
+          name: test-report
           path: test-report.txt
