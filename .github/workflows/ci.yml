@@ -29,7 +29,7 @@ jobs:
 
       # Faz o upload do relatório gerado como artefato
       - name: Upload Test Report
-        uses: actions/upload-artifact@v3  # Atualize para a versão mais recente
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: test-report.txt
