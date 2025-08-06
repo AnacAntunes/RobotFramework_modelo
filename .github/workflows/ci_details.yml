@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Log Checkout Completion
+        run: echo "Código fonte verificado com sucesso."
+
+      - name: Install Robot Framework
+        run: |
+          echo "Instalando dependências do Robot Framework..."
+          python -m pip install --upgrade pip
+          pip install robotframework
+          echo "Robot Framework instalado com sucesso."
+
+      - name: Run Robot Framework Tests
+        run: |
+          echo "Executando os testes do Robot Framework..."
+          robot --outputdir results tests/
+
+      - name: Extract Test Results
+        run: |
+          echo "Testes que passaram:"
+          grep 'status="PASS"' results/output.xml | awk -F\" '{print $6}'
+          echo "Testes que falharam:"
+          grep 'status="FAIL"' results/output.xml | awk -F\" '{print $6}'
+
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: results/
+      - name: Log Upload Completion
+        run: echo "Relatórios de testes enviados como artefatos com sucesso. Veja os resultados completos em 'results/report.html'."
