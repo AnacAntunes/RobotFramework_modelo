@@ -1,7 +1,7 @@
 # Robot Framework Project
 Este é um projeto de automação de testes utilizando o Robot Framework. O objetivo deste projeto é fornecer uma estrutura organizada para testes de APIs, interface do usuário e outros tipos de testes funcionais.
 
-## Estrutura do Projeto
+#### Estrutura do Projeto
 Estrutura de pastas do projeto:
 ```
 Project │ 
@@ -36,14 +36,14 @@ Project │
 └── screenshots
 ```
 
-## Requisitos
+##### Requisitos
 Certifique-se de ter o [Python](https://www.python.org/) instalado em sua máquina. Você pode instalar as dependências do projeto usando o gerenciador de pacotes `pip`. Para isso, execute o seguinte comando:
 
 ```
 pip install -r requirements.txt
 ```
 
-### Explicações para Cada Dependência:
+#### Explicações para cada Dependência:
 
 - **robotframework:** A versão principal do Robot Framework, que é usada para escrever e executar suas suítes de teste.
 - **robotframework-appiumlibrary:** Uma biblioteca para integrar o Appium dentro do Robot Framework, permitindo testes de aplicações móveis.
@@ -51,11 +51,23 @@ pip install -r requirements.txt
 - **robotframework-seleniumlibrary:** Caso haja necessidade de testes web, essa biblioteca fornece suporte para automação com Selenium.
 - **requests:** Usada para realizar requisições HTTP quando você precisa interagir com serviços web durante os testes.
 - **pyyaml:** Facilita a manipulação de arquivos YAML, útil especialmente para configuração.
+- **robotframework-requests:** Recursos avançados para requisições HTTP
+- **robotframework-jsonlibrary:** Utilitários para manipulação de dados JSON
+- **robotframework-processlibrary:** Manipulação de processos externos (utilizado para K6)
 
-## Execução dos Testes
+##### Testes de Performance com K6
+Para testes de performance, o projeto inclui integração com K6, que deve ser instalado separadamente:
+- Instruções de instalação do K6 - https://k6.io/
+O arquivo tests/performance_tests/performance_k6_test.robot demonstra como:
+- Gerar scripts de teste K6 dinamicamente
+- Executar testes de carga contra APIs
+- Analisar métricas de performance
+- Validar resultados contra critérios pré-definidos
+
+#### Execução dos Testes
 Para executar os testes, utilize o seguinte comando na linha de comando na raiz do projeto:
-```
-robot tests/<diretório_do_teste>/<arquivo_do_teste>.robot
+```bash
+robot --outputdir results tests/
 ```
 Por exemplo, para executar os testes de API, você pode usar:
 
@@ -66,7 +78,7 @@ robot tests/API_tests/api_test.robot
 Os relatórios e logs da execução dos testes serão gerados na pasta reports/.
 
 
-### Estrutura dos Testes
+#### Estrutura dos Testes
 Os testes estão organizados em diferentes diretórios e arquivos de acordo com seus propósitos:
 
 - **acceptance_tests/:** Testes de aceitação do sistema.
@@ -77,5 +89,23 @@ Os testes estão organizados em diferentes diretórios e arquivos de acordo com 
 - **UI_tests/:** Testes que validam a interface do usuário.
 - **suites/:** Conjuntos de testes para facilitar a execução de grupos de testes relacionados.
 
-## Contribuição
-Contribuições são bem-vindas! Se você encontrar algum problema ou tiver sugestões de melhoria, sinta-se à vontade para abrir uma issue ou enviar um pull request.
+#### Boas Práticas
+- Mantenha os testes independentes entre si
+- Separe dados de teste da lógica dos testes
+- Crie keywords reutilizáveis para ações comuns
+- Mantenha os relatórios de execução para análise histórica
+- Utilize padrões como Page Object para testes de UI
+
+#### Relatórios
+Após a execução, os relatórios são gerados em:
+- reports/reports/ - Relatórios HTML detalhados
+- reports/logs/ - Logs de execução
+- reports/screenshots/ - Capturas de tela em caso de falhas em testes de UI
+
+#### Contribuição
+Contribuições são bem-vindas! Para contribuir:
+- Faça um fork do repositório
+- Crie uma branch para sua feature (git checkout -b feature/nova-feature)
+- Commit suas alterações (git commit -m 'Adiciona nova feature')
+- Push para a branch (git push origin feature/nova-feature)
+- Abra um Pull Request

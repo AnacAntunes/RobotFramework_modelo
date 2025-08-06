@@ -1,0 +1,11 @@
+test_scenarios:
+  basic_load:
+    vus: 10
+    duration: 30s
+    error_threshold: 1
+    response_threshold: 500
+  stress_test:
+    vus: 50
+    duration: 60s
+    error_threshold: 5
+    response_threshold: 1000
