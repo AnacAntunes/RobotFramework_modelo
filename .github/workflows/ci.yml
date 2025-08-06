@@ -1,8 +1,5 @@
-# Este é um fluxo de trabalho básico para ajudar você a começar com Actions
-
 name: CI
 
-# Controle de quando o fluxo de trabalho será executado
 on:
   push:
     branches: [ main ]
@@ -10,9 +7,8 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-# Um fluxo de trabalho é composto por um ou mais jobs que podem ser executados sequencialmente ou em paralelo
 jobs:
-  build:
+  run-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,16 +16,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Executa os testes e gera um relatório
-      - name: Run Tests and Generate Report
+      # Instala as dependências do Robot Framework
+      - name: Install Robot Framework
         run: |
-          npm install  # Certifique-se de instalar as dependências antes de rodar os testes
-          npm test -- --reporter=spec > test-report.txt
-        continue-on-error: false  # Garante que o fluxo falhe se os testes falharem
+          python -m pip install --upgrade pip
+          pip install robotframework
 
-      # Faz o upload do relatório gerado como artefato
-      - name: Upload Test Report
+      # Executa os testes do Robot Framework
+      - name: Run Robot Framework Tests
+        run: |
+          robot --outputdir results tests/
+
+      # Faz o upload dos relatórios gerados como artefatos
+      - name: Upload Test Reports
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
-          path: test-report.txt
+          name: test-results
+          path: results/
