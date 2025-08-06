@@ -3,7 +3,7 @@ Este é um projeto de automação de testes utilizando o Robot Framework. O obje
 
 ## Estrutura do Projeto
 Estrutura de pastas do projeto:
-
+```
 Project │ 
 ├── .gitignore
 ├── README.md
@@ -34,6 +34,7 @@ Project │
 ├── logs/
 ├── reports/
 └── screenshots
+```
 
 ## Requisitos
 Certifique-se de ter o [Python](https://www.python.org/) instalado em sua máquina. Você pode instalar as dependências do projeto usando o gerenciador de pacotes `pip`. Para isso, execute o seguinte comando:
