@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation     Suite de testes de performance usando K6
+Documentation     Suite de testes de performance usando K6 com Docker
 Resource          ../../resources/keywords/k6_keywords.robot
 Library           Collections
 Library           OperatingSystem
@@ -9,12 +9,12 @@ ${API_BASE_URL}       https://jsonplaceholder.typicode.com
 ${VUS}                10
 ${DURATION}           30s
 ${ERROR_THRESHOLD}    1
-${RESPONSE_THRESHOLD} 500
+${RESPONSE_THRESHOLD}    500    # Corrigido o formato da variável
 
 *** Test Cases ***
 Executar Teste de Carga Básico
     [Documentation]    Executa um teste de carga básico com K6
-    [Tags]    performance    api    k6
+    [Tags]    performance    api    k6    docker
     
     # Verificar se o diretório de scripts existe, se não, criar
     Create Directory    ${K6_SCRIPTS_DIR}
@@ -28,13 +28,18 @@ Executar Teste de Carga Básico
         Create File    ${script_path}    ${script_content}
     END
     
-    ${result}    ${output_file}=    Run K6 Script    basic_load_test.js    ${VUS}    ${DURATION}
+    # Validar que o script foi criado
+    File Should Exist    ${script_path}    O script de teste K6 não foi criado corretamente
+    
+    # Executar teste via Docker
+    ${result}    ${output_file}=    Run K6 Script With Docker    basic_load_test.js    ${VUS}    ${DURATION}
+    
     Log    K6 Test Output: ${result.stdout}
     Verify K6 Results    ${output_file}    ${ERROR_THRESHOLD}    ${RESPONSE_THRESHOLD}
 
 Verificar Performance da API de Posts
     [Documentation]    Teste específico para a API de posts
-    [Tags]    performance    api    k6    posts
+    [Tags]    performance    api    k6    posts    docker
     
     # Verificar se o diretório de scripts existe, se não, criar
     Create Directory    ${K6_SCRIPTS_DIR}
@@ -46,8 +51,11 @@ Verificar Performance da API de Posts
     ${script_path}=    Set Variable    ${K6_SCRIPTS_DIR}/posts_api_test.js
     Create File    ${script_path}    ${script_content}
     
-    # Executar o script
-    ${result}    ${output_file}=    Run K6 Script    posts_api_test.js    5    15s
+    # Validar que o script foi criado
+    File Should Exist    ${script_path}    O script de teste K6 não foi criado corretamente
+    
+    # Executar o script via Docker
+    ${result}    ${output_file}=    Run K6 Script With Docker    posts_api_test.js    5    15s
     
     # Verificar resultados
     Log    K6 Test Output: ${result.stdout}
@@ -129,7 +137,8 @@ Create K6 Basic Load Test Script
     ...      sleep(Math.random() * 2 + 1); // Entre 1-3 segundos
     ...    }
 
-    [Return]    ${script}
+    # Usando RETURN em vez de [Return]
+    RETURN    ${script}
 
 Create K6 Script For API Endpoint
     [Documentation]    Cria um script K6 para testar um endpoint específico
@@ -184,4 +193,5 @@ Create K6 Script For API Endpoint
     ...      sleep(1);
     ...    }
     
-    [Return]    ${script}
+    # Usando RETURN em vez de [Return]
+    RETURN    ${script}
