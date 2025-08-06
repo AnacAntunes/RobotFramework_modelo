@@ -1,0 +1,46 @@
+# Ignore os arquivos de configuração do ambiente
+.env
+*.env
+
+# Ignore os diretórios de logs e relatórios
+logs/
+reports/
+screenshots/
+
+# Ignore arquivos temporários e de saída
+*.tmp
+*.log
+*.bak
+*.swp
+*.o
+*.pyc
+__pycache__/
+
+# Ignore pacotes de dependências
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Ignore arquivos gerados pelo Robot Framework
+*.html
+*.xml
+
+# Ignore bibliotecas construídas e arquivos de cache
+*.pyo
+*.pdb
+
+# Ignore arquivos de teste temporários e de saída
+*.report
+*.json
+
+# Ignore arquivos de configuração específicos de IDEs
+.vscode/
+.idea/
+*.swp
+.coder-ide/
+myenv/
+
+# Ignore arquivos do sistema operacional
+.DS_Store
+Thumbs.db
