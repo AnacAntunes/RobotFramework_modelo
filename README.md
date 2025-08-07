@@ -73,7 +73,11 @@ pip install -r requirements.txt
 
 - **robotframework:** A versão principal do Robot Framework, usada para escrever e executar suítes de teste.
 - **robotframework-appiumlibrary:** Biblioteca para integrar o Appium no Robot Framework, permitindo testes de aplicações móveis.
+<<<<<<< HEAD
 - **Appium-Python-Client:** Client oficial para o Appium que possibilita a automação de testes em aplicativos móveis.
+=======
+- **appium-Python-Client:** Client oficial para o Appium que possibilita a automação de testes em aplicativos móveis.
+>>>>>>> c85dc34e54b89382de2e5dd2add5a1cbb0c1981c
 - **robotframework-seleniumlibrary:** Suporte para automação de testes web com Selenium.
 - **requests:** Usada para realizar requisições HTTP ao interagir com serviços web durante os testes.
 - **pyyaml:** Facilita a manipulação de arquivos YAML, especialmente útil para configuração.
@@ -160,4 +164,8 @@ Contribuições são bem-vindas! Para contribuir:
 4. Push para a branch: `git push origin feature/nova-feature`.
 5. Abra um Pull Request.
 
+<<<<<<< HEAD
 ---
+=======
+---
+>>>>>>> c85dc34e54b89382de2e5dd2add5a1cbb0c1981c
