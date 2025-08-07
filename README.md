@@ -1,7 +1,11 @@
 # Robot Framework Project
 Este é um projeto de automação de testes utilizando o Robot Framework. O objetivo deste projeto é fornecer uma estrutura organizada para testes de APIs, interface do usuário e outros tipos de testes funcionais.
 
-[![CI Details](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details.yml/badge.svg?branch=main)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details.yml)
+Testes Completos: [![CI Details Tests](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details_tests.yml)
+
+Testes de Performance [![CI Performance Tests](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_performance_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_performance_tests.yml)
+
+Testes de Acessibilidade [![WCAG Accessibility Tests](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_accessibility_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_accessibility_tests.yml)
 
 #### Estrutura do Projeto
 Estrutura de pastas do projeto:
