@@ -1,11 +1,20 @@
 # Robot Framework Project
 Este é um projeto de automação de testes utilizando o Robot Framework. O objetivo deste projeto é fornecer uma estrutura organizada para testes de APIs, interface do usuário e outros tipos de testes funcionais.
 
-Testes Completos: [![CI Details Tests](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details_tests.yml)
+#### Status dos Testes
+Aqui estão os status dos diferentes tipos de testes realizados no projeto:
 
-Testes de Performance [![CI Performance Tests](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_performance_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_performance_tests.yml)
+##### Testes Completos
+[![CI Detalhes dos Testes](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_details_tests.yml)  
+*Clique para visualizar os detalhes dos testes completos.*   
 
-Testes de Acessibilidade [![WCAG Accessibility Tests](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_accessibility_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_accessibility_tests.yml)
+##### Testes de Performance
+[![CI Testes de Performance](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_performance_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_performance_tests.yml)  
+*Clique para ver os resultados dos testes de performance.*   
+
+##### Testes de Acessibilidade
+[![Testes de Acessibilidade WCAG](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_accessibility_tests.yml/badge.svg)](https://github.com/AnacAntunes/RobotFramework_modelo/actions/workflows/ci_accessibility_tests.yml)  
+*Clique para conferir os resultados dos testes de acessibilidade.*   
 
 #### Estrutura do Projeto
 Estrutura de pastas do projeto:
