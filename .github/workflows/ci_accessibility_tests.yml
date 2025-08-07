@@ -1,90 +1,37 @@
-name: WCAG Accessibility Tests
+name: Accessibility Tests
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 8 * * 1'  # Segunda-feira às 8h
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  wcag-accessibility-tests:
+  accessibility-tests:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '18'
-        
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-        
+          python-version: "3.11"
+
       - name: Install Dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install robotframework==5.0.1
+          pip install robotframework
           pip install robotframework-seleniumlibrary
-          echo "Dependências instaladas com sucesso."
-        
-      - name: Create Report Directories
-        run: |
-          mkdir -p reports/accessibility/temp
-          chmod -R 777 reports/accessibility
-          echo "Diretórios de relatórios criados com sucesso."
-      
-      - name: Run WCAG Accessibility Tests
-        id: run_tests
-        continue-on-error: true  # Evita que o workflow falhe se o teste falhar
-        run: |
-          echo "Executando testes de conformidade WCAG..."
-          robot --outputdir results tests/accessibility_tests/accessibility_test.robot
-          echo "exit_code=$?" >> $GITHUB_OUTPUT
-          echo "Testes WCAG concluídos."
-        
-      - name: Generate Summary
-        run: |
-          echo "## Relatório de Conformidade WCAG" > wcag_summary.md
-          echo "" >> wcag_summary.md
-          echo "### Status da Execução" >> wcag_summary.md
-          
-          if [ "${{ steps.run_tests.outputs.exit_code }}" == "0" ]; then
-            echo "✅ **Testes executados com sucesso**" >> wcag_summary.md
-          else
-            echo "⚠️ **Execução com erros - verifique os logs**" >> wcag_summary.md
-          fi
-          
-          echo "" >> wcag_summary.md
-          echo "### Resultados de Acessibilidade" >> wcag_summary.md
-          echo "" >> wcag_summary.md
-          
-          # Adicionar detalhes de relatórios WCAG
-          if ls reports/accessibility/wcag_violations_*.md 1> /dev/null 2>&1; then
-            for report in reports/accessibility/wcag_violations_*.md; do
-              url=$(grep -m 1 "URL:" "$report" | cut -d' ' -f2-)
-              echo "#### $url" >> wcag_summary.md
-              echo "" >> wcag_summary.md
-              
-              # Extrair seção de critérios não atendidos
-              awk '/## Critérios WCAG Não Atendidos/{flag=1;next} /## Recomendações Gerais/{flag=0} flag' "$report" >> wcag_summary.md
-              
-              echo "" >> wcag_summary.md
-            done
-          else
-            echo "Nenhum relatório de violações WCAG encontrado." >> wcag_summary.md
-          fi
-          
-          echo "" >> wcag_summary.md
-          echo "Para detalhes completos, consulte os relatórios nos artefatos." >> wcag_summary.md
+          pip install robotframework-axe
+          sudo apt-get install -y chromium-browser
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+      - name: Run Accessibility Tests
+        run: |
+          robot -d results tests/accessibility_tests/
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        if: always()
         with:
-          name: wcag-accessibility-results
-          path: |
-            results/
-            reports/accessibility/
-            wcag_summary.md
+          name: accessibility-test-results
+          path: results/
